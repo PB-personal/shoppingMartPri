@@ -2,11 +2,11 @@ import Swal from 'sweetalert2'
 
 export function useSwal() {
   const showAlert = async (options) => {
-    await Swal.fire(options)
+    return await Swal.fire(options)
   }
 
   const showSuccess = async (message) => {
-    await showAlert({
+    return await showAlert({
       title: 'Success',
       text: message,
       icon: 'success',
@@ -17,7 +17,7 @@ export function useSwal() {
   }
 
   const showError = async (message) => {
-    await showAlert({
+    return await showAlert({
       title: 'Error',
       text: message,
       icon: 'error',
@@ -28,7 +28,7 @@ export function useSwal() {
   }
 
   const showConfirm = async (message) => {
-    await showAlert({
+    return await showAlert({
       title: 'Are you sure?',
       text: message,
       icon: 'warning',

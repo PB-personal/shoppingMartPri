@@ -1,4 +1,5 @@
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
+import { useAuthStore } from '@/stores/authStore'
 import AccessDenied from '@/views/auth/AccessDenied.vue'
 import NotFound from '@/views/auth/NotFound.vue'
 import SignIn from '@/views/auth/SignIn.vue'
@@ -52,7 +53,19 @@ const router = createRouter({
       name: APP_ROUTE_NAMES.PRODUCT_CREATE,
       component: ProductUpsert,
     },
+    {
+      path: '/product-update/:id',
+      name: APP_ROUTE_NAMES.PROCUCT_UPDATE,
+      component: ProductUpsert,
+    },
   ],
+})
+
+router.beforeEach(async (to, from) => {
+  const authStore = useAuthStore()
+  if (!authStore.initialized) {
+    await authStore.initializeAuth()
+  }
 })
 
 export default router

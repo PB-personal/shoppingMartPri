@@ -29,8 +29,8 @@
             >
           </li>
           <li class="nav-item">
-            <router-link class="nav-link" :to="{ name: APP_ROUTE_NAMES.PRODUCT_CREATE }"
-              >Add Product</router-link
+            <router-link class="nav-link" :to="{ name: APP_ROUTE_NAMES.CONTACT_US }"
+              >Contact Us</router-link
             >
           </li>
         </ul>
@@ -58,15 +58,23 @@
               </li>
             </ul>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link class="nav-link" :to="{ name: APP_ROUTE_NAMES.SIGN_IN }"
               >Sign In</router-link
             >
           </li>
-          <li class="nav-item">
+          <li class="nav-item" v-if="!authStore.isAuthenticated">
             <router-link class="nav-link" :to="{ name: APP_ROUTE_NAMES.SIGN_UP }"
               >Sign Up</router-link
             >
+          </li>
+          <li class="nav-item" v-if="authStore.isAuthenticated">
+            <button
+              @click="[authStore.signOutUser(), router.push({ name: APP_ROUTE_NAMES.HOME })]"
+              class="nav-link"
+            >
+              Sign Out
+            </button>
           </li>
         </ul>
       </div>
@@ -77,6 +85,9 @@
 <script setup lang="ts">
 import { APP_ROUTE_NAMES } from '@/constants/routeNames'
 import { useThemeStore } from '@/stores/themeStore'
+import { useAuthStore } from '@/stores/authStore'
+import router from '@/router/routes'
 
 const themeStore = useThemeStore()
+const authStore = useAuthStore()
 </script>

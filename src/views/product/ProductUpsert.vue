@@ -4,7 +4,9 @@
     <div class="row border p-4 my-5 rounded">
       <div class="col-9">
         <form v-on:submit.prevent="onSubmit">
-          <div class="h2 text-center text-success">Create Product</div>
+          <div class="h2 text-center text-success">
+            {{ productIdForUpdate ? 'Update' : 'Create' }} Product
+          </div>
           <hr />
           <div v-if="errorList.length > 0" class="alert alert-danger pb-0">
             Please fix the following errors:
@@ -94,8 +96,11 @@ import { ref, reactive, onMounted } from 'vue'
 import { PRODUCT_CATEGORIES } from '@/constants/appConstants'
 import { useSwal } from '@/utility/useSwal'
 import productService from '@/services/productService'
+import { useRoute, useRouter } from 'vue-router'
 
-const { showSuccess, showError, showConfirm } = useSwal()
+const { showSuccess, showError } = useSwal()
+const router = useRouter()
+const route = useRoute()
 const loading = ref(false)
 const errorList = reactive([])
 const productData = reactive({
@@ -109,12 +114,25 @@ const productData = reactive({
   imageUrl: 'https://via.placeholder.com/150',
 })
 
-//practoice purpose
-// onMounted(() => {
-//   showSuccess('Product Create successfully')
-//   showError('An error occurred while creating the product.')
-//   showConfirm('Are you sure you want to create this product?')
-// })
+const productIdForUpdate = route.params.id
+
+onMounted(async () => {
+  if (!productIdForUpdate) return
+  loading.value = true
+
+  try {
+    const product = await productService.getProductById(productIdForUpdate)
+    Object.assign(productData, {
+      ...product,
+      tags: product.tags.join(', '),
+    })
+  } catch (e) {
+    console.log('Error fetching product:', e)
+    showError('An error occurred while fetching the product details.')
+  } finally {
+    loading.value = false
+  }
+})
 
 async function onSubmit() {
   try {
@@ -139,9 +157,16 @@ async function onSubmit() {
           productData.tags.length > 0 ? productData.tags.split(',').map((tag) => tag.trim()) : [],
       }
       //   await new Promise((resolve) => setTimeout(resolve, 2000))
-      await productService.createProduct(productObj)
+      if (productIdForUpdate) {
+        await productService.updateProduct(productIdForUpdate, productObj)
+        showSuccess('Product Updated successfully')
+      } else {
+        await productService.createProduct(productObj)
+        showSuccess('Product Create successfully')
+      }
+
       console.log('Product Created:', productObj)
-      showSuccess('Product Create successfully')
+      router.push({ name: APP_ROUTE_NAMES.PRODUCT_LIST })
     }
   } catch (error) {
     console.log('Error creating product:', error)
