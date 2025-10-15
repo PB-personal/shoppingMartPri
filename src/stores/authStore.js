@@ -8,7 +8,7 @@ import {
   onAuthStateChanged,
 } from 'firebase/auth'
 import { ROLE_ADMIN, ROLE_USER } from '@/constants/appConstants'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
 
 export const useAuthStore = defineStore('authStore', () => {
   const user = ref(null)
@@ -29,8 +29,7 @@ export const useAuthStore = defineStore('authStore', () => {
         createdAt: new Date(),
       })
 
-      user.value = userCredential.user
-      user.role = ROLE_USER
+      clearUser()
       error.value = null
       console.log('User signed up:', user.value)
     } catch (error) {
@@ -80,11 +79,18 @@ export const useAuthStore = defineStore('authStore', () => {
     onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         user.value = firebaseUser
+        await fetchRole(firebaseUser.uid)
         initialized.value = true
       } else {
-        user.value = null
+        clearUser()
       }
     })
+  }
+
+  const fetchRole = async (uid) => {
+    //fetch role from firestore
+    const userDoc = await getDoc(doc(db, 'users', uid))
+    role.value = userDoc.exists() ? userDoc.data().role : ''
   }
 
   return {

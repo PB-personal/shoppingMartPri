@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      class="bg-success w-100 position-relative overflow-hidden mb-4 py-5 d-flex align-items-center hero-section"
+      class="w-100 position-relative overflow-hidden mb-4 py-5 d-flex align-items-center hero-section"
     >
       <div class="position-absolute top-0 start-0 w-100 h-100"></div>
 
@@ -154,34 +154,11 @@ const filteredList = computed(() => {
   }
   return tempArray
 })
-
-// const filteredProductList = computed(() => {
-//   let tempArray =
-//     selectedCategory.value === 'ALL'
-//       ? [...products.value]
-//       : products.value.filter(
-//           (item) => item.category.toUpperCase() === selectedCategory.value.toUpperCase(),
-//         )
-
-//   if (searchValue.value) {
-//     tempArray = tempArray.filter((item) => {
-//       return item.name.toUpperCase().includes(searchValue.value.toUpperCase())
-//     })
-//   }
-
-//   if (selectedSortOption.value === SORT_NAME_A_Z) {
-//     tempArray.sort((a, b) => a.name.localeCompare(b.name))
-//   }
-//   if (selectedSortOption.value === SORT_NAME_Z_A) {
-//     tempArray.sort((a, b) => b.name.localeCompare(a.name))
-//   }
-//   if (selectedSortOption.value === SORT_PRICE_HIGH_LOW) {
-//     tempArray.sort((a, b) => b.price - a.price)
-//   }
-//   if (selectedSortOption.value === SORT_PRICE_LOW_HIGH) {
-//     tempArray.sort((a, b) => a.price - b.price)
-//   }
-
-//   return tempArray
-// })
 </script>
+<style scoped>
+.hero-section {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+  padding: 80px 0;
+}
+</style>
