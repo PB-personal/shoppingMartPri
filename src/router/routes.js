@@ -73,13 +73,17 @@ router.beforeEach(async (to, from) => {
 
 function isAdmin() {
   const authStore = useAuthStore()
+  console.log('isAdmin check', authStore.isAuthenticated, authStore.isAdmin)
   if (authStore.isAuthenticated) {
     if (authStore.isAdmin) {
+      console.log('admin', isAdmin)
       return true
     } else {
+      console.log('admin', 'else')
       return { name: APP_ROUTE_NAMES.ACCESS_DENIED }
     }
   } else {
+    console.log('admin', 'else not auth')
     return { name: APP_ROUTE_NAMES.SIGN_IN }
   }
 }

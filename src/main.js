@@ -8,15 +8,22 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import { onAuthStateChanged } from 'firebase/auth'
 import { auth } from './utility/firebaseConfig'
-let app
-onAuthStateChanged(auth, async (user) => {
-  if (!app) {
-    app = createApp(App)
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+import { useThemeStore } from './stores/themeStore'
 
-    app.use(createPinia())
-    app.use(router)
-    setTimeout(() => {
-      app.mount('#app')
-    }, 1000)
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
+const app = createApp(App)
+app.use(pinia)
+app.use(router)
+const themeStore = useThemeStore()
+if (themeStore.theme) {
+  document.body.setAttribute('data-bs-theme', themeStore.theme)
+}
+let isMounted = false
+onAuthStateChanged(auth, async (user) => {
+  if (!isMounted) {
+    app.mount('#app')
+    isMounted = true
   }
 })
